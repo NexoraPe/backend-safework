@@ -1,0 +1,5 @@
+incidents y assigments, deberían pertenecer al mismo bounded context
+porque:
+- Incident es el agregado, y assigment una entidad
+- Assigment no existe sin incident, no se puede crear un assigment de la nd
+- y seria mas sencillo :v
