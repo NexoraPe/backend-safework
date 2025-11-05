@@ -7,10 +7,7 @@ import com.nexorape.safework.service.IAM.domain.model.valueobjects.EmailAddress;
 import com.nexorape.safework.service.IAM.domain.model.valueobjects.Role;
 
 
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 
@@ -29,6 +26,7 @@ public class User extends AuditableAbstractAggregateRoot<User> {
 
     @Getter
     @Embedded
+    @Column(nullable = false, unique = true)
     private EmailAddress emailAddress;
 
     @Getter
