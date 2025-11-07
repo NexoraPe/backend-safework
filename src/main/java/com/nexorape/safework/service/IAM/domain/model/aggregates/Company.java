@@ -4,8 +4,10 @@ import com.nexorape.safework.service.IAM.domain.model.valueobjects.RegistrationC
 import com.nexorape.safework.service.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
 import lombok.Getter;
 
+@Entity
 public class Company extends AuditableAbstractAggregateRoot<Company> {
 
     @Getter
