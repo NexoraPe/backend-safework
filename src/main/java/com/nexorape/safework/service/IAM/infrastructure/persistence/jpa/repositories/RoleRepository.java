@@ -2,10 +2,13 @@ package com.nexorape.safework.service.IAM.infrastructure.persistence.jpa.reposit
 
 import com.nexorape.safework.service.IAM.domain.model.entities.Role;
 import com.nexorape.safework.service.IAM.domain.model.valueobjects.Roles;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-public interface RoleRepository {
+@Repository
+public interface RoleRepository extends JpaRepository<Role, Long> {
     /**
      * This method is responsible for finding the role by name.
      * @param name The role name.
