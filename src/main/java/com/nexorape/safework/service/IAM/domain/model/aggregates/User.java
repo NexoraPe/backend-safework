@@ -10,12 +10,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
+@Getter
+@Setter
 @Entity
 public class User extends AuditableAbstractAggregateRoot<User> {
     // ATRIBUTOS LMAO
