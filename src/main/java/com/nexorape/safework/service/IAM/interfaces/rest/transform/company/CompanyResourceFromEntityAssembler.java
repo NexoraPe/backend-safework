@@ -1,4 +1,4 @@
-package com.nexorape.safework.service.IAM.interfaces.rest.transform;
+package com.nexorape.safework.service.IAM.interfaces.rest.transform.company;
 
 import com.nexorape.safework.service.IAM.domain.model.aggregates.Company;
 import com.nexorape.safework.service.IAM.interfaces.rest.resources.company.CompanyResource;

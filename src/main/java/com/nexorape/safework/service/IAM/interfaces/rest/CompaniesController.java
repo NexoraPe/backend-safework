@@ -8,8 +8,8 @@ import com.nexorape.safework.service.IAM.domain.services.company.CompanyCommandS
 import com.nexorape.safework.service.IAM.domain.services.company.CompanyQueryService;
 import com.nexorape.safework.service.IAM.interfaces.rest.resources.company.CompanyResource;
 import com.nexorape.safework.service.IAM.interfaces.rest.resources.company.CreateCompanyResource;
-import com.nexorape.safework.service.IAM.interfaces.rest.transform.CompanyResourceFromEntityAssembler;
-import com.nexorape.safework.service.IAM.interfaces.rest.transform.CreateCompanyCommandFromResourceAssembler;
+import com.nexorape.safework.service.IAM.interfaces.rest.transform.company.CompanyResourceFromEntityAssembler;
+import com.nexorape.safework.service.IAM.interfaces.rest.transform.company.CreateCompanyCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
