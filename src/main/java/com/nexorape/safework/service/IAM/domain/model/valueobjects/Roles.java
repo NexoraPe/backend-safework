@@ -1,6 +1,6 @@
 package com.nexorape.safework.service.IAM.domain.model.valueobjects;
 
-public enum Role {
+public enum Roles {
     WORKER,
-    EMPLOYER,
+    EMPLOYER
 }
