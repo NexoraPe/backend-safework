@@ -1,40 +1,50 @@
 package com.nexorape.safework.service.IAM.domain.model.aggregates;
 
+import com.nexorape.safework.service.IAM.domain.model.entities.Role;
 import com.nexorape.safework.service.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import com.nexorape.safework.service.shared.domain.model.valueobjects.UserId;
 import com.nexorape.safework.service.shared.domain.model.valueobjects.CompanyId;
-import com.nexorape.safework.service.IAM.domain.model.valueobjects.EmailAddress;
-import com.nexorape.safework.service.IAM.domain.model.valueobjects.Role;
+import com.nexorape.safework.service.IAM.domain.model.valueobjects.user.EmailAddress;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @Entity
 public class User extends AuditableAbstractAggregateRoot<User> {
-    @Getter
+    // ATRIBUTOS LMAO
+    /**/
     @Embedded
-    private UserId userUuid;
-
-    @Getter
-    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "companyId", column = @Column(name = "fk_company_id"))})
     private CompanyId companyId;
 
+    /**/
     @Getter
+    @NotBlank
+    @Size(max = 120)
     private String fullName;
 
-    @Getter
+    /**/
     @Embedded
-    @Column(nullable = false, unique = true)
+    @AttributeOverrides({
+            @AttributeOverride(name = "address", column = @Column(name = "email"))})
     private EmailAddress emailAddress;
 
     @Getter
     private String passwordHash;
 
-    @Getter
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable( name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 
     @Getter
     private String phoneNumber;
@@ -42,34 +52,65 @@ public class User extends AuditableAbstractAggregateRoot<User> {
     @Getter
     private String profilePictureUrl;
 
+    // CONSTRUCTORES
     /**
      * Default constructor
      */
     public User() {
-        super();
-        this.userUuid = new UserId();
+        this.roles = new HashSet<>();
     }
 
-
-    public User(Long companyId, String fullName, String emailAddress, String passwordHash, String role) {
-        this();
-        this.companyId = new CompanyId(companyId);
+    /**
+     * Sobrecargado constructor
+     */
+    public User(CompanyId companyId, String fullName, EmailAddress emailAddress, String passwordHash, List<Role> roles) {
+        this.companyId = companyId;
         this.fullName = fullName;
-        this.emailAddress = new EmailAddress(emailAddress);
+        this.emailAddress = emailAddress;
         this.passwordHash = passwordHash;
-        this.role = Role.valueOf(role.toUpperCase())  ;
+        addRoles(roles);
     }
 
-    public void updatePersonalInfo(String fullName, String phoneNumber) {
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
+    // METODOS
+    //public void updatePersonalInfo(String fullName, String phoneNumber) {
+    //    this.fullName = fullName;
+    //    this.phoneNumber = phoneNumber;
+    //}
+//
+    //public void updateProfilePicture(String profilePictureUrl) {
+    //    this.profilePictureUrl = profilePictureUrl;
+    //}
+//
+    //public void updatePasswordHash(String passwordHash) {
+    //    this.passwordHash = passwordHash;
+    //}
+
+    /**
+     * Add a role to the user
+     * @param role the role to add
+     * @return the user with the added role
+     */
+    public User addRole(Role role) {
+        this.roles.add(role);
+        return this;
     }
 
-    public void updateProfilePicture(String profilePictureUrl) {
-        this.profilePictureUrl = profilePictureUrl;
+    /**
+     * Add a list of roles to the user
+     * @param roles the list of roles to add
+     * @return the user with the added roles
+     */
+    public User addRoles(List<Role> roles) {
+        var validatedRoleSet = Role.validateRoleSet(roles);
+        this.roles.addAll(validatedRoleSet);
+        return this;
     }
 
-    public void updatePasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public Long getCompanyId(){
+        return this.companyId.companyId();
+    }
+
+    public String getEmail(){
+        return this.emailAddress.address();
     }
 }
