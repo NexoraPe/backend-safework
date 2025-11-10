@@ -1,6 +1,8 @@
 package com.nexorape.safework.service.IAM.application.internal.eventhandlers;
 
+import com.nexorape.safework.service.IAM.domain.model.commands.company.SeedCompaniesCommand;
 import com.nexorape.safework.service.IAM.domain.model.commands.role.SeedRolesCommand;
+import com.nexorape.safework.service.IAM.domain.services.company.CompanyCommandService;
 import com.nexorape.safework.service.IAM.domain.services.role.RoleCommandService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +19,14 @@ import java.sql.Timestamp;
 @Service
 public class ApplicationReadyEventHandler {
     private final RoleCommandService roleCommandService;
+    private final CompanyCommandService companyCommandService;
+
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationReadyEventHandler.class);
 
-    public ApplicationReadyEventHandler(RoleCommandService roleCommandService) {
+    public ApplicationReadyEventHandler(RoleCommandService roleCommandService, CompanyCommandService companyCommandService) {
         this.roleCommandService = roleCommandService;
+        this.companyCommandService = companyCommandService;
     }
 
     /**
@@ -35,6 +41,14 @@ public class ApplicationReadyEventHandler {
         var seedRolesCommand = new SeedRolesCommand();
         roleCommandService.handle(seedRolesCommand);
         LOGGER.info("Roles seeding verification finished for {} at {}", applicationName, currentTimestamp());
+
+
+        var seedCompaniesCommand = new SeedCompaniesCommand();
+        companyCommandService.handle(seedCompaniesCommand);
+
+        LOGGER.info("Adding default companies for testing {} at {}", applicationName, currentTimestamp());
+
+
     }
 
     private Timestamp currentTimestamp() {
