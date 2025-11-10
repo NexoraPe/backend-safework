@@ -5,7 +5,7 @@ import com.nexorape.safework.service.IAM.domain.model.queries.company.GetAllComp
 import com.nexorape.safework.service.IAM.domain.model.queries.company.GetCompanyByIdQuery;
 import com.nexorape.safework.service.IAM.domain.model.queries.company.GetCompanyByRegistrationCodeQuery;
 import com.nexorape.safework.service.IAM.domain.services.company.CompanyQueryService;
-import com.nexorape.safework.service.IAM.infrastructure.persistence.jpa.repositories.CompanyRepository;
+import com.nexorape.safework.service.IAM.infrastructure.persistence.jpa.repositories.persistence.jpa.repositories.company.CompanyRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.nexorape.safework.service.IAM.infrastructure.persistence.jpa.repositories;
+package com.nexorape.safework.service.IAM.infrastructure.persistence.jpa.repositories.persistence.jpa.repositories.company;
 
 
 // CUSTOM IMPORTS
