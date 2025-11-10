@@ -2,7 +2,6 @@ package com.nexorape.safework.service.IAM.domain.model.aggregates;
 
 import com.nexorape.safework.service.IAM.domain.model.entities.Role;
 import com.nexorape.safework.service.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import com.nexorape.safework.service.shared.domain.model.valueobjects.CompanyId;
 import com.nexorape.safework.service.IAM.domain.model.valueobjects.user.EmailAddress;
 
 
