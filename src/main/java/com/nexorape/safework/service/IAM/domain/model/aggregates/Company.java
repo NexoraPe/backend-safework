@@ -1,38 +1,61 @@
 package com.nexorape.safework.service.IAM.domain.model.aggregates;
 
-import com.nexorape.safework.service.IAM.domain.model.valueobjects.RegistrationCode;
+//Por defecto
+import com.nexorape.safework.service.IAM.domain.model.commands.company.CreateCompanyCommand;
 import com.nexorape.safework.service.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
+
+//Value Objects
+import com.nexorape.safework.service.IAM.domain.model.valueobjects.company.RegistrationCode;
+
 
 @Entity
 public class Company extends AuditableAbstractAggregateRoot<Company> {
 
+    // ATRIBUTOS LMAO
+    /**/
     @Getter
     private String name;
 
-    @Getter
-    @Embedded
-    @Column(nullable = false, unique = true)
+    /**/
+    @Embedded /*Es para value Objects, tiene que tener @Embeddable el value Object*/
+    @AttributeOverrides({
+            @AttributeOverride(name = "code", column = @Column(name = "registration_code"))})
     private RegistrationCode registrationCode;
 
-
+    // CONSTRUCTORES
+    /*Por defecto*/
     public Company() {
-        super();
     }
 
-    public Company(String name, String registrationCode) {
-        this();
+    /*Sobrecargados*/
+    public Company(String name) {
         this.name = name;
-        this.registrationCode = new RegistrationCode(registrationCode);
+        this.registrationCode = new RegistrationCode();
     }
 
-    public void updateName(String newName) {
-        this.name = newName;
+    public Company(CreateCompanyCommand command) {
+        this.name = command.name();
+        this.registrationCode = new RegistrationCode();
     }
-    public void updateRegistrationCode(String newRegistrationCode) {
-        this.registrationCode = new RegistrationCode(newRegistrationCode);
+
+    // METODOS
+    /*GETTERS*/
+
+    /**
+     * Company name getter
+     * @return Company name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Company registrationCode getter
+     * @return Company registrationCode
+     */
+    public String getRegistrationCode() {
+        return registrationCode.code();
     }
 }
