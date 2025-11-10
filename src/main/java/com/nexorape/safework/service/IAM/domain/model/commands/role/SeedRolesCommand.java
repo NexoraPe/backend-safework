@@ -1,4 +1,4 @@
 package com.nexorape.safework.service.IAM.domain.model.commands.role;
 
-public enum SeedRolesCommand {
+public record SeedRolesCommand() {
 }
