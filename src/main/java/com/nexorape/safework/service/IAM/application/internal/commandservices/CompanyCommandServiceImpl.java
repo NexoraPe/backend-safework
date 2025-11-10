@@ -4,7 +4,7 @@ package com.nexorape.safework.service.IAM.application.internal.commandservices;
 import com.nexorape.safework.service.IAM.domain.model.aggregates.Company;
 import com.nexorape.safework.service.IAM.domain.model.commands.company.CreateCompanyCommand;
 import com.nexorape.safework.service.IAM.domain.services.company.CompanyCommandService;
-import com.nexorape.safework.service.IAM.infrastructure.persistence.jpa.repositories.persistence.jpa.repositories.company.CompanyRepository;
+import com.nexorape.safework.service.IAM.infrastructure.persistence.jpa.repositories.company.CompanyRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
