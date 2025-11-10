@@ -22,10 +22,13 @@ import java.util.Set;
 public class User extends AuditableAbstractAggregateRoot<User> {
     // ATRIBUTOS LMAO
     /**/
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "companyId", column = @Column(name = "fk_company_id"))})
-    private CompanyId companyId;
+    //@Embedded
+    //@AttributeOverrides({
+    //        @AttributeOverride(name = "companyId", column = @Column(name = "fk_company_id"))})
+    //private CompanyId companyId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_company_id", nullable = false)
+    private Company company;
 
     /**/
     @Getter
@@ -65,8 +68,8 @@ public class User extends AuditableAbstractAggregateRoot<User> {
     /**
      * Sobrecargado constructor
      */
-    public User(CompanyId companyId, String fullName, EmailAddress emailAddress, String passwordHash, List<Role> roles) {
-        this.companyId = companyId;
+    public User(Company company, String fullName, EmailAddress emailAddress, String passwordHash, List<Role> roles) {
+        this.company = company;
         this.fullName = fullName;
         this.emailAddress = emailAddress;
         this.passwordHash = passwordHash;
@@ -109,7 +112,7 @@ public class User extends AuditableAbstractAggregateRoot<User> {
     }
 
     public Long getCompanyId(){
-        return this.companyId.companyId();
+        return this.company.getId();
     }
 
     public String getEmail(){
