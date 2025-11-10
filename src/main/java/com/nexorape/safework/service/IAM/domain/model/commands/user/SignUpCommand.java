@@ -11,5 +11,10 @@ public record SignUpCommand(
         String fullName,
         EmailAddress emailAddress,
         String passwordHash,
-        List<Role> roles) {
+        List<Role> roles)
+{
+
+    public Long getCompanyId(){
+        return companyId.companyId();
+    }
 }
