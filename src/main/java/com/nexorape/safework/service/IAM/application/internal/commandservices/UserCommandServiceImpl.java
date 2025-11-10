@@ -6,6 +6,7 @@ import com.nexorape.safework.service.IAM.domain.model.aggregates.User;
 import com.nexorape.safework.service.IAM.domain.model.commands.user.SignInCommand;
 import com.nexorape.safework.service.IAM.domain.model.commands.user.SignUpCommand;
 import com.nexorape.safework.service.IAM.domain.services.user.UserCommandService;
+import com.nexorape.safework.service.IAM.infrastructure.persistence.jpa.repositories.CompanyRepository;
 import com.nexorape.safework.service.IAM.infrastructure.persistence.jpa.repositories.RoleRepository;
 import com.nexorape.safework.service.IAM.infrastructure.persistence.jpa.repositories.UserRepository;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -26,12 +27,14 @@ public class UserCommandServiceImpl implements UserCommandService {
     private final HashingService hashingService;
     private final TokenService tokenService;
     private final RoleRepository roleRepository;
+    private final CompanyRepository companyRepository;
 
-    public UserCommandServiceImpl(UserRepository userRepository, HashingService hashingService, TokenService tokenService, RoleRepository roleRepository) {
+    public UserCommandServiceImpl(UserRepository userRepository, HashingService hashingService, TokenService tokenService, RoleRepository roleRepository, CompanyRepository companyRepository) {
         this.userRepository = userRepository;
         this.hashingService = hashingService;
         this.tokenService = tokenService;
         this.roleRepository = roleRepository;
+        this.companyRepository = companyRepository;
     }
 
     /**
@@ -67,7 +70,10 @@ public class UserCommandServiceImpl implements UserCommandService {
         if (userRepository.existsByEmail(command.emailAddress()))
             throw new RuntimeException("Username already exists");
         var roles = command.roles().stream().map(role -> roleRepository.findByName(role.getName()).orElseThrow(() -> new RuntimeException("Role name not found"))).toList();
-        var user = new User(command.companyId(), command.fullName(), command.emailAddress(), hashingService.encode(command.passwordHash()), roles);
+
+        var company = companyRepository.findById(command.getCompanyId()).orElseThrow(() -> new RuntimeException("Company id not found"));
+
+        var user = new User(company, command.fullName(), command.emailAddress(), hashingService.encode(command.passwordHash()), roles);
         userRepository.save(user);
         return userRepository.findByEmail(command.emailAddress());
     }
