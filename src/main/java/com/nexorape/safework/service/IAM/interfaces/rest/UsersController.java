@@ -83,7 +83,7 @@ public class UsersController {
      * @throws RuntimeException if the user is not found
      * @see UserResource
      */
-    @GetMapping(value = "/{email}")
+    @GetMapping(value = "/email/{email}")
     @Operation(summary = "Get user by email", description = "Get the user with the given email.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User retrieved successfully."),
