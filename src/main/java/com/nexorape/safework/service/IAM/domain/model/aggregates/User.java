@@ -68,6 +68,7 @@ public class User extends AuditableAbstractAggregateRoot<User> {
      * Sobrecargado constructor
      */
     public User(Company company, String fullName, EmailAddress emailAddress, String passwordHash, List<Role> roles) {
+        this();
         this.company = company;
         this.fullName = fullName;
         this.emailAddress = emailAddress;
