@@ -42,15 +42,6 @@ public class Company extends AuditableAbstractAggregateRoot<Company> {
 
     // METODOS
     /*GETTERS*/
-
-    /**
-     * Company name getter
-     * @return Company name
-     */
-    public String getName() {
-        return name;
-    }
-
     /**
      * Company registrationCode getter
      * @return Company registrationCode
