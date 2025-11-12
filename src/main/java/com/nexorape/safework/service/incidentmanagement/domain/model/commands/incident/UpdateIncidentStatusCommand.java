@@ -1,4 +1,4 @@
-package com.nexorape.safework.service.incidentmanagement.domain.model.commands;
+package com.nexorape.safework.service.incidentmanagement.domain.model.commands.incident;
 
 import com.nexorape.safework.service.incidentmanagement.domain.model.valueobjects.incident.IncidentStatus;
 
