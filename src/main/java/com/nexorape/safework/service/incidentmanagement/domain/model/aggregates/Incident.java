@@ -2,7 +2,8 @@ package com.nexorape.safework.service.incidentmanagement.domain.model.aggregates
 
 import com.nexorape.safework.service.iam.domain.model.aggregates.Company;
 import com.nexorape.safework.service.iam.domain.model.aggregates.User;
-import com.nexorape.safework.service.incidentmanagement.domain.model.commands.CreateIncidentCommand;
+import com.nexorape.safework.service.incidentmanagement.domain.model.commands.incident.CreateIncidentCommand;
+import com.nexorape.safework.service.incidentmanagement.domain.model.entities.Assignment;
 import com.nexorape.safework.service.incidentmanagement.domain.model.valueobjects.incident.IncidentStatus;
 import com.nexorape.safework.service.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
@@ -43,6 +44,11 @@ public class Incident extends AuditableAbstractAggregateRoot<Incident> {
     @Getter
     private String documentUrl;
 
+    /* mappedBy = "incident": Yo no tengo la FK, la tiene la clase Assignment en el campo "incident"*/
+    @Getter
+    @OneToOne(mappedBy = "incident", cascade = CascadeType.ALL)
+    private Assignment assignment;
+
     // CONSTRUCTORES
     public Incident() {
         super();
@@ -77,4 +83,16 @@ public class Incident extends AuditableAbstractAggregateRoot<Incident> {
     public Long getUserId(){
         return user.getId();
     }
+
+    //METODOS
+    public void assignTo(User user){
+        if (this.status == IncidentStatus.CLOSED) {
+            throw new IllegalStateException("No se puede asignar un caso cerrado");
+        }
+
+        this.assignment = new Assignment(this, user);
+
+        this.status = IncidentStatus.ASSIGNED;
+    }
+
 }
