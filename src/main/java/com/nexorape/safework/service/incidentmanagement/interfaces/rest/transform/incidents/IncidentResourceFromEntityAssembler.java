@@ -7,6 +7,8 @@ public class IncidentResourceFromEntityAssembler {
     public static IncidentResource toResourceFromEntity(Incident entity) {
         return new  IncidentResource(
                 entity.getId(),
+                entity.getUserId(),
+                entity.getCompanyId(),
                 entity.getTitle(),
                 entity.getDescription(),
                 entity.getLocation(),

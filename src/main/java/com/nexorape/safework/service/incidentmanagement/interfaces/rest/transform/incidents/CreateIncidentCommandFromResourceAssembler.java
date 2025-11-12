@@ -5,7 +5,10 @@ import com.nexorape.safework.service.incidentmanagement.interfaces.rest.resource
 
 public class CreateIncidentCommandFromResourceAssembler {
     public static CreateIncidentCommand toCommandFromResource(CreateIncidentResource resource) {
+
         return new CreateIncidentCommand(
+                resource.userId(),
+                resource.companyId(),
                 resource.title(),
                 resource.description(),
                 resource.location()

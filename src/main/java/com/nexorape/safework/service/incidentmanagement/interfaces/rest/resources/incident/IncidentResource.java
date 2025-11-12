@@ -2,6 +2,8 @@ package com.nexorape.safework.service.incidentmanagement.interfaces.rest.resourc
 
 public record IncidentResource(
         Long id,
+        Long userId,
+        Long companyId,
         String title,
         String description,
         String location,
