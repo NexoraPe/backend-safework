@@ -1,8 +1,8 @@
 package com.nexorape.safework.service.incidentmanagement.interfaces.rest;
 
 
-import com.nexorape.safework.service.incidentmanagement.domain.model.queries.GetAllIncidentsQuery;
-import com.nexorape.safework.service.incidentmanagement.domain.model.queries.GetIncidentByIdQuery;
+import com.nexorape.safework.service.incidentmanagement.domain.model.queries.incident.GetAllIncidentsQuery;
+import com.nexorape.safework.service.incidentmanagement.domain.model.queries.incident.GetIncidentByIdQuery;
 import com.nexorape.safework.service.incidentmanagement.domain.services.IncidentCommandService;
 import com.nexorape.safework.service.incidentmanagement.domain.services.IncidentQueryService;
 import com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.incident.CreateIncidentResource;

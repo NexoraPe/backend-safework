@@ -2,8 +2,8 @@ package com.nexorape.safework.service.incidentmanagement.application.internal.qu
 
 
 import com.nexorape.safework.service.incidentmanagement.domain.model.aggregates.Incident;
-import com.nexorape.safework.service.incidentmanagement.domain.model.queries.GetAllIncidentsQuery;
-import com.nexorape.safework.service.incidentmanagement.domain.model.queries.GetIncidentByIdQuery;
+import com.nexorape.safework.service.incidentmanagement.domain.model.queries.incident.GetAllIncidentsQuery;
+import com.nexorape.safework.service.incidentmanagement.domain.model.queries.incident.GetIncidentByIdQuery;
 import com.nexorape.safework.service.incidentmanagement.domain.services.IncidentQueryService;
 import com.nexorape.safework.service.incidentmanagement.infrastructure.persistence.jpa.repositories.IncidentRepository;
 import org.springframework.stereotype.Service;
