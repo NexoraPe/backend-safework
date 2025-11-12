@@ -1,5 +1,7 @@
 package com.nexorape.safework.service.incidentmanagement.application.internal.commandservices;
 
+import com.nexorape.safework.service.iam.domain.model.entities.Role;
+import com.nexorape.safework.service.iam.domain.model.valueobjects.Roles;
 import com.nexorape.safework.service.iam.infrastructure.persistence.jpa.repositories.CompanyRepository;
 import com.nexorape.safework.service.iam.infrastructure.persistence.jpa.repositories.UserRepository;
 import com.nexorape.safework.service.incidentmanagement.domain.model.aggregates.Incident;
@@ -39,12 +41,19 @@ public class IncidentCommandServiceImpl implements IncidentCommandService {
         return Optional.of(incident);
     }
 
-
     //ASSIGMENTS
     @Override
     public Optional<Assignment> handle(CreateAssignmentCommand command){
         var incident = incidentRepository.findById(command.incidentId()).orElseThrow(() -> new RuntimeException("Incident not found"));
         var user = userRepository.findById(command.userId()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        // VALIDACIÓN DE ROL
+        // List<String>
+        var roles = user.getRoles().stream().map(Role::getStringName).toList();
+
+        if (!roles.contains(Roles.EMPLOYER.name())) {
+            throw new IllegalArgumentException("Error: Solo se pueden asignar incidentes a usuarios con rol EMPLOYEER.");
+        }
 
         incident.assignTo(user);
 
