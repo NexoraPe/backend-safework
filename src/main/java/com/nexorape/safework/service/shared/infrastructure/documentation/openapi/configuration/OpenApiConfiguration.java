@@ -42,17 +42,19 @@ public class OpenApiConfiguration {
 
         // Add a security scheme
 
-       final String securitySchemeName = "bearerAuth";
 
-       openApi.addSecurityItem(new SecurityRequirement()
-                       .addList(securitySchemeName))
-               .components(new Components()
-                       .addSecuritySchemes(securitySchemeName,
-                               new SecurityScheme()
-                                       .name(securitySchemeName)
-                                       .type(SecurityScheme.Type.HTTP)
-                                       .scheme("bearer")
-                                       .bearerFormat("JWT")));
+        /*CAMBIO TEMPORAL PARA UN DESAROLLO MAS RAPIDO*/
+       //final String securitySchemeName = "bearerAuth";
+        //
+       //openApi.addSecurityItem(new SecurityRequirement()
+       //                .addList(securitySchemeName))
+       //        .components(new Components()
+       //                .addSecuritySchemes(securitySchemeName,
+       //                        new SecurityScheme()
+       //                                .name(securitySchemeName)
+       //                                .type(SecurityScheme.Type.HTTP)
+       //                                .scheme("bearer")
+       //                                .bearerFormat("JWT")));
 
         // Return the OpenAPI configuration object with all the settings
 
