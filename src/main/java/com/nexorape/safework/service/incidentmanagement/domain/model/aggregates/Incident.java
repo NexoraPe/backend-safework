@@ -1,18 +1,27 @@
 package com.nexorape.safework.service.incidentmanagement.domain.model.aggregates;
 
+import com.nexorape.safework.service.iam.domain.model.aggregates.Company;
+import com.nexorape.safework.service.iam.domain.model.aggregates.User;
 import com.nexorape.safework.service.incidentmanagement.domain.model.commands.CreateIncidentCommand;
 import com.nexorape.safework.service.incidentmanagement.domain.model.valueobjects.incident.IncidentStatus;
 import com.nexorape.safework.service.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
 public class Incident extends AuditableAbstractAggregateRoot<Incident> {
 
     // ATRIBUTOS
+    /**/
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_user_id", nullable = false)
+    private User user;
+
+    /**/
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_company_id", nullable = false)
+    private Company company;
+
     /**/
     @Getter
     private String title;
@@ -47,8 +56,25 @@ public class Incident extends AuditableAbstractAggregateRoot<Incident> {
         this.location = command.location();
     }
 
+    public Incident(User user, Company company, CreateIncidentCommand command) {
+        this();
+        this.user = user;
+        this.company = company;
+        this.title = command.title();
+        this.description = command.description();
+        this.location = command.location();
+    }
+
     // METODOS
     public String getStatus() {
         return status.name();
+    }
+
+    public Long getCompanyId(){
+        return company.getId();
+    }
+
+    public Long getUserId(){
+        return user.getId();
     }
 }
