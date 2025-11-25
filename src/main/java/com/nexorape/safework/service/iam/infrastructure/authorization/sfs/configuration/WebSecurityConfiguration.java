@@ -26,7 +26,8 @@ import java.util.List;
  * <p>
  * This class is responsible for configuring the web security.
  * It enables the method security and configures the security filter chain.
- * It includes the authentication manager, the authentication provider, the password encoder and the authentication entry point.
+ * It includes the authentication manager, the authentication provider, the
+ * password encoder and the authentication entry point.
  * </p>
  */
 @Configuration
@@ -43,6 +44,7 @@ public class WebSecurityConfiguration {
 
     /**
      * This method creates the Bearer Authorization Request Filter.
+     * 
      * @return The Bearer Authorization Request Filter
      * @see BearerAuthorizationRequestFilter
      */
@@ -53,18 +55,25 @@ public class WebSecurityConfiguration {
 
     /**
      * This method creates the authentication manager.
-     * @param authenticationConfiguration The {@link AuthenticationConfiguration} object with the authentication configuration
-     * @return The {@link AuthenticationManager} instance from the authentication configuration
+     * 
+     * @param authenticationConfiguration The {@link AuthenticationConfiguration}
+     *                                    object with the authentication
+     *                                    configuration
+     * @return The {@link AuthenticationManager} instance from the authentication
+     *         configuration
      *
      */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     /**
      * This method creates the authentication provider.
-     * @return The {@link DaoAuthenticationProvider} authentication provider with the user details service and the password encoder
+     * 
+     * @return The {@link DaoAuthenticationProvider} authentication provider with
+     *         the user details service and the password encoder
      */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -76,6 +85,7 @@ public class WebSecurityConfiguration {
 
     /**
      * This method creates the password encoder.
+     * 
      * @return The {@link PasswordEncoder} instance with the hashing service
      */
     @Bean
@@ -87,8 +97,10 @@ public class WebSecurityConfiguration {
      * This method creates the security filter chain.
      * It also configures the http security.
      *
-     * @param http The {@link HttpSecurity} object to configure with the security filter chain
-     * @return The {@link SecurityFilterChain} instance with the application http security configuration
+     * @param http The {@link HttpSecurity} object to configure with the security
+     *             filter chain
+     * @return The {@link SecurityFilterChain} instance with the application http
+     *         security configuration
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -100,8 +112,9 @@ public class WebSecurityConfiguration {
             return cors;
         }));
         http.csrf(csrfConfigurer -> csrfConfigurer.disable())
-                .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(unauthorizedRequestHandler))
-                .sessionManagement( customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(
+                        exceptionHandling -> exceptionHandling.authenticationEntryPoint(unauthorizedRequestHandler))
+                .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(
                                 "/api/v1/authentication/**",
@@ -109,8 +122,9 @@ public class WebSecurityConfiguration {
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",
-                                "/webjars/**").permitAll()
-                        .anyRequest().permitAll()); //".authenticated" esto es un cambio temporal, para desarrollo mas rápido
+                                "/webjars/**")
+                        .permitAll()
+                        .anyRequest().authenticated()); // ".permitAll" para desarrollo mas rápido
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authorizationRequestFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -119,12 +133,15 @@ public class WebSecurityConfiguration {
 
     /**
      * This is the constructor of the class.
-     * @param userDetailsService The user details service
-     * @param tokenService The token service
-     * @param hashingService The hashing service
+     * 
+     * @param userDetailsService       The user details service
+     * @param tokenService             The token service
+     * @param hashingService           The hashing service
      * @param authenticationEntryPoint The authentication entry point
      */
-    public WebSecurityConfiguration(@Qualifier("defaultUserDetailsService") UserDetailsService userDetailsService, BearerTokenService tokenService, BCryptHashingService hashingService, AuthenticationEntryPoint authenticationEntryPoint) {
+    public WebSecurityConfiguration(@Qualifier("defaultUserDetailsService") UserDetailsService userDetailsService,
+            BearerTokenService tokenService, BCryptHashingService hashingService,
+            AuthenticationEntryPoint authenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
         this.tokenService = tokenService;
         this.hashingService = hashingService;
