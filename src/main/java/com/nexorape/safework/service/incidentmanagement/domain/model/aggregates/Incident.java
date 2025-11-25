@@ -44,7 +44,10 @@ public class Incident extends AuditableAbstractAggregateRoot<Incident> {
     @Getter
     private String documentUrl;
 
-    /* mappedBy = "incident": Yo no tengo la FK, la tiene la clase Assignment en el campo "incident"*/
+    /*
+     * mappedBy = "incident": Yo no tengo la FK, la tiene la clase Assignment en el
+     * campo "incident"
+     */
     @Getter
     @OneToOne(mappedBy = "incident", cascade = CascadeType.ALL)
     private Assignment assignment;
@@ -76,16 +79,16 @@ public class Incident extends AuditableAbstractAggregateRoot<Incident> {
         return status.name();
     }
 
-    public Long getCompanyId(){
+    public Long getCompanyId() {
         return company.getId();
     }
 
-    public Long getUserId(){
+    public Long getUserId() {
         return user.getId();
     }
 
-    //METODOS
-    public void assignTo(User user){
+    // METODOS
+    public void assignTo(User user) {
         if (this.status == IncidentStatus.CLOSED) {
             throw new IllegalStateException("No se puede asignar un caso cerrado");
         }
@@ -93,6 +96,20 @@ public class Incident extends AuditableAbstractAggregateRoot<Incident> {
         this.assignment = new Assignment(this, user);
 
         this.status = IncidentStatus.ASSIGNED;
+    }
+
+    public void startProgress() {
+        if (this.status != IncidentStatus.ASSIGNED) {
+            throw new IllegalStateException("Incident must be ASSIGNED to start progress.");
+        }
+        this.status = IncidentStatus.IN_PROGRESS;
+    }
+
+    public void close() {
+        if (this.status != IncidentStatus.IN_PROGRESS) {
+            throw new IllegalStateException("Incident must be IN_PROGRESS to close.");
+        }
+        this.status = IncidentStatus.CLOSED;
     }
 
 }
