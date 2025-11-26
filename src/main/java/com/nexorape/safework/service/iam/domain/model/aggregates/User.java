@@ -4,7 +4,6 @@ import com.nexorape.safework.service.iam.domain.model.entities.Role;
 import com.nexorape.safework.service.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import com.nexorape.safework.service.iam.domain.model.valueobjects.user.EmailAddress;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -21,10 +20,11 @@ import java.util.Set;
 public class User extends AuditableAbstractAggregateRoot<User> {
     // ATRIBUTOS LMAO
     /**/
-    //@Embedded
-    //@AttributeOverrides({
-    //        @AttributeOverride(name = "companyId", column = @Column(name = "fk_company_id"))})
-    //private CompanyId companyId;
+    // @Embedded
+    // @AttributeOverrides({
+    // @AttributeOverride(name = "companyId", column = @Column(name =
+    // "fk_company_id"))})
+    // private CompanyId companyId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_company_id", nullable = false)
     private Company company;
@@ -38,16 +38,14 @@ public class User extends AuditableAbstractAggregateRoot<User> {
     /**/
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "address", column = @Column(name = "email"))})
+            @AttributeOverride(name = "address", column = @Column(name = "email")) })
     private EmailAddress emailAddress;
 
     @Getter
     private String passwordHash;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable( name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
     @Getter
@@ -77,21 +75,22 @@ public class User extends AuditableAbstractAggregateRoot<User> {
     }
 
     // METODOS
-    //public void updatePersonalInfo(String fullName, String phoneNumber) {
-    //    this.fullName = fullName;
-    //    this.phoneNumber = phoneNumber;
-    //}
-//
-    //public void updateProfilePicture(String profilePictureUrl) {
-    //    this.profilePictureUrl = profilePictureUrl;
-    //}
-//
-    //public void updatePasswordHash(String passwordHash) {
-    //    this.passwordHash = passwordHash;
-    //}
+    // public void updatePersonalInfo(String fullName, String phoneNumber) {
+    // this.fullName = fullName;
+    // this.phoneNumber = phoneNumber;
+    // }
+    //
+    // public void updateProfilePicture(String profilePictureUrl) {
+    // this.profilePictureUrl = profilePictureUrl;
+    // }
+    //
+    // public void updatePasswordHash(String passwordHash) {
+    // this.passwordHash = passwordHash;
+    // }
 
     /**
      * Add a role to the user
+     * 
      * @param role the role to add
      * @return the user with the added role
      */
@@ -102,6 +101,7 @@ public class User extends AuditableAbstractAggregateRoot<User> {
 
     /**
      * Add a list of roles to the user
+     * 
      * @param roles the list of roles to add
      * @return the user with the added roles
      */
@@ -111,11 +111,11 @@ public class User extends AuditableAbstractAggregateRoot<User> {
         return this;
     }
 
-    public Long getCompanyId(){
+    public Long getCompanyId() {
         return this.company.getId();
     }
 
-    public String getEmail(){
+    public String getEmail() {
         return this.emailAddress.address();
     }
 }

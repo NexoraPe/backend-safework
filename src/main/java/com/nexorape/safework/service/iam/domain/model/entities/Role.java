@@ -12,8 +12,8 @@ import java.util.List;
 /**
  * Role entity
  * <p>
- *     This entity represents the role of a user in the system.
- *     It is used to define the permissions of a user.
+ * This entity represents the role of a user in the system.
+ * It is used to define the permissions of a user.
  * </p>
  */
 @Entity
@@ -36,6 +36,7 @@ public class Role {
 
     /**
      * Get the name of the role as a string
+     * 
      * @return the name of the role as a string
      */
     public String getStringName() {
@@ -44,6 +45,7 @@ public class Role {
 
     /**
      * Get the default role
+     * 
      * @return the default role
      */
     public static Role getDefaultRole() {
@@ -52,6 +54,7 @@ public class Role {
 
     /**
      * Get the role from its name
+     * 
      * @param name the name of the role
      * @return the role
      */
@@ -62,8 +65,10 @@ public class Role {
     /**
      * Validate the role set
      * <p>
-     *     This method validates the role set and returns the default role if the set is empty.
+     * This method validates the role set and returns the default role if the set is
+     * empty.
      * </p>
+     * 
      * @param roles the role set
      * @return the role set
      */

@@ -12,7 +12,8 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 /**
- * This class is responsible for providing the user details to the Spring Security framework.
+ * This class is responsible for providing the user details to the Spring
+ * Security framework.
  * It implements the UserDetails interface.
  */
 @Getter
@@ -27,6 +28,7 @@ public class UserDetailsImpl implements UserDetails {
     private final boolean credentialsNonExpired;
     private final boolean enabled;
     private final Collection<? extends GrantedAuthority> authorities;
+    private final Long companyId;
 
     /**
      * This constructor initializes the UserDetailsImpl object.
@@ -34,11 +36,14 @@ public class UserDetailsImpl implements UserDetails {
      * @param username    The username.
      * @param password    The password.
      * @param authorities The authorities.
+     * @param companyId   The companyId.
      */
-    public UserDetailsImpl(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsImpl(String username, String password, Collection<? extends GrantedAuthority> authorities,
+            Long companyId) {
         this.username = username;
         this.password = password;
         this.authorities = authorities;
+        this.companyId = companyId;
         this.accountNonExpired = true;
         this.accountNonLocked = true;
         this.credentialsNonExpired = true;
@@ -46,7 +51,8 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     * This method is responsible for building the UserDetailsImpl object from the User object.
+     * This method is responsible for building the UserDetailsImpl object from the
+     * User object.
      *
      * @param user The user object.
      * @return The UserDetailsImpl object.
@@ -59,6 +65,7 @@ public class UserDetailsImpl implements UserDetails {
         return new UserDetailsImpl(
                 user.getEmail(),
                 user.getPasswordHash(),
-                authorities);
+                authorities,
+                user.getCompanyId());
     }
 }

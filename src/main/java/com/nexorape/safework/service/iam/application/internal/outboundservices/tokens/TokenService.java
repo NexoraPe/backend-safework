@@ -1,5 +1,7 @@
 package com.nexorape.safework.service.iam.application.internal.outboundservices.tokens;
 
+import com.nexorape.safework.service.iam.domain.model.aggregates.User;
+
 /**
  * TokenService interface
  * This interface is used to generate and validate tokens
@@ -8,13 +10,17 @@ public interface TokenService {
 
     /**
      * Generate a token for a given username
+     * 
      * @param username the username
      * @return String the token
      */
     String generateToken(String username);
 
+    String generateToken(User user);
+
     /**
      * Extract the username from a token
+     * 
      * @param token the token
      * @return String the username
      */
@@ -22,6 +28,7 @@ public interface TokenService {
 
     /**
      * Validate a token
+     * 
      * @param token the token
      * @return boolean true if the token is valid, false otherwise
      */

@@ -18,14 +18,14 @@ public class AssignmentQueryServiceImpl implements AssignmentQueryService {
         this.assignmentRepository = assignmentRepository;
     }
 
-    //QUERIES
+    // QUERIES
     @Override
-    public Optional<Assignment> handle(GetAssignmentByIdQuery query){
-        return assignmentRepository.findById(query.assigmentId());
+    public Optional<Assignment> handle(GetAssignmentByIdQuery query) {
+        return assignmentRepository.findById(query.assignmentId());
     }
 
     @Override
-    public List<Assignment> handle(GetAllAssignmentsQuery query){
+    public List<Assignment> handle(GetAllAssignmentsQuery query) {
         return assignmentRepository.findAll();
     }
 

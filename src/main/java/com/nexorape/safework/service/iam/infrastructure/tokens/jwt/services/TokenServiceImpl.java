@@ -1,5 +1,6 @@
 package com.nexorape.safework.service.iam.infrastructure.tokens.jwt.services;
 
+import com.nexorape.safework.service.iam.domain.model.aggregates.User;
 import com.nexorape.safework.service.iam.infrastructure.tokens.jwt.BearerTokenService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -32,7 +33,6 @@ public class TokenServiceImpl implements BearerTokenService {
 
     private static final int TOKEN_BEGIN_INDEX = 7;
 
-
     @Value("${authorization.jwt.secret}")
     private String secret;
 
@@ -41,17 +41,23 @@ public class TokenServiceImpl implements BearerTokenService {
 
     /**
      * This method generates a JWT token from an authentication object
+     * 
      * @param authentication the authentication object
      * @return String the JWT token
      * @see Authentication
      */
     @Override
     public String generateToken(Authentication authentication) {
-        return buildTokenWithDefaultParameters(authentication.getName());
+        var userDetails = (com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl) authentication
+                .getPrincipal();
+        var companyId = userDetails.getCompanyId();
+        var role = userDetails.getAuthorities().stream().findFirst().map(Object::toString).orElse("WORKER");
+        return buildTokenWithClaims(authentication.getName(), companyId, role);
     }
 
     /**
      * This method generates a JWT token from a username
+     * 
      * @param username the username
      * @return String the JWT token
      */
@@ -59,9 +65,38 @@ public class TokenServiceImpl implements BearerTokenService {
         return buildTokenWithDefaultParameters(username);
     }
 
+    public String generateToken(User user) {
+        // 1. Extraemos el Company ID
+        Long companyId = user.getCompanyId();
+
+        // 2. Extraemos el Rol
+        String role = user.getRoles().stream()
+                .findFirst()
+                .map(roleObj -> roleObj.getStringName())
+                .orElse("WORKER");
+
+        // 3. Construimos el token VIP
+        return buildTokenWithClaims(user.getEmail(), companyId, role);
+    }
+
+    private String buildTokenWithClaims(String username, Long companyId, String role) {
+        var issuedAt = new Date();
+        var expiration = DateUtils.addDays(issuedAt, expirationDays);
+        var key = getSigningKey();
+        return Jwts.builder()
+                .subject(username)
+                .claim("companyId", companyId)
+                .claim("role", role)
+                .issuedAt(issuedAt)
+                .expiration(expiration)
+                .signWith(key)
+                .compact();
+    }
+
     /**
      * This method generates a JWT token from a username and a secret.
      * It uses the default expiration days from the application.properties file.
+     * 
      * @param username the username
      * @return String the JWT token
      */
@@ -79,6 +114,7 @@ public class TokenServiceImpl implements BearerTokenService {
 
     /**
      * This method extracts the username from a JWT token
+     * 
      * @param token the token
      * @return String the username
      */
@@ -87,8 +123,19 @@ public class TokenServiceImpl implements BearerTokenService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    @Override
+    public Long getCompanyIdFromToken(String token) {
+        return extractClaim(token, claims -> claims.get("companyId", Long.class));
+    }
+
+    @Override
+    public String getRoleFromToken(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
+    }
+
     /**
      * This method validates a JWT token
+     * 
      * @param token the token
      * @return boolean true if the token is valid, false otherwise
      */
@@ -98,7 +145,7 @@ public class TokenServiceImpl implements BearerTokenService {
             Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
             LOGGER.info("Token is valid");
             return true;
-        }  catch (SignatureException e) {
+        } catch (SignatureException e) {
             LOGGER.error("Invalid JSON Web Token Signature: {}", e.getMessage());
         } catch (MalformedJwtException e) {
             LOGGER.error("Invalid JSON Web Token: {}", e.getMessage());
@@ -114,9 +161,10 @@ public class TokenServiceImpl implements BearerTokenService {
 
     /**
      * Extract a claim from a token
-     * @param token the token
+     * 
+     * @param token           the token
      * @param claimsResolvers the claims resolver
-     * @param <T> the type of the claim
+     * @param <T>             the type of the claim
      * @return T the claim
      */
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
@@ -126,6 +174,7 @@ public class TokenServiceImpl implements BearerTokenService {
 
     /**
      * Extract all claims from a token
+     * 
      * @param token the token
      * @return Claims the claims
      */
@@ -135,6 +184,7 @@ public class TokenServiceImpl implements BearerTokenService {
 
     /**
      * Get the signing key
+     * 
      * @return SecretKey the signing key
      */
     private SecretKey getSigningKey() {
@@ -161,7 +211,8 @@ public class TokenServiceImpl implements BearerTokenService {
     @Override
     public String getBearerTokenFrom(HttpServletRequest request) {
         String parameter = getAuthorizationParameterFrom(request);
-        if (isTokenPresentIn(parameter) && isBearerTokenIn(parameter)) return extractTokenFrom(parameter);
+        if (isTokenPresentIn(parameter) && isBearerTokenIn(parameter))
+            return extractTokenFrom(parameter);
         return null;
     }
 
