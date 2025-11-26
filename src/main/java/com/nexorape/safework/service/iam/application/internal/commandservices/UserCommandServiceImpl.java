@@ -17,8 +17,9 @@ import java.util.Optional;
 /**
  * User command service implementation
  * <p>
- *     This class implements the {@link UserCommandService} interface and provides the implementation for the
- *     {@link SignInCommand} and {@link SignUpCommand} commands.
+ * This class implements the {@link UserCommandService} interface and provides
+ * the implementation for the
+ * {@link SignInCommand} and {@link SignUpCommand} commands.
  * </p>
  */
 @Service
@@ -29,7 +30,8 @@ public class UserCommandServiceImpl implements UserCommandService {
     private final RoleRepository roleRepository;
     private final CompanyRepository companyRepository;
 
-    public UserCommandServiceImpl(UserRepository userRepository, HashingService hashingService, TokenService tokenService, RoleRepository roleRepository, CompanyRepository companyRepository) {
+    public UserCommandServiceImpl(UserRepository userRepository, HashingService hashingService,
+            TokenService tokenService, RoleRepository roleRepository, CompanyRepository companyRepository) {
         this.userRepository = userRepository;
         this.hashingService = hashingService;
         this.tokenService = tokenService;
@@ -40,10 +42,13 @@ public class UserCommandServiceImpl implements UserCommandService {
     /**
      * Handle the sign-in command
      * <p>
-     *     This method handles the {@link SignInCommand} command and returns the user and the token.
+     * This method handles the {@link SignInCommand} command and returns the user
+     * and the token.
      * </p>
+     * 
      * @param command the sign-in command containing the username and password
-     * @return and optional containing the user matching the username and the generated token
+     * @return and optional containing the user matching the username and the
+     *         generated token
      * @throws RuntimeException if the user is not found or the password is invalid
      */
     @Override
@@ -60,8 +65,9 @@ public class UserCommandServiceImpl implements UserCommandService {
     /**
      * Handle the sign-up command
      * <p>
-     *     This method handles the {@link SignUpCommand} command and returns the user.
+     * This method handles the {@link SignUpCommand} command and returns the user.
      * </p>
+     * 
      * @param command the sign-up command containing the username and password
      * @return the created user
      */
@@ -69,11 +75,14 @@ public class UserCommandServiceImpl implements UserCommandService {
     public Optional<User> handle(SignUpCommand command) {
         if (userRepository.existsByEmailAddress(command.emailAddress()))
             throw new RuntimeException("Username already exists");
-        var roles = command.roles().stream().map(role -> roleRepository.findByName(role.getName()).orElseThrow(() -> new RuntimeException("Role name not found"))).toList();
+        var roles = command.roles().stream().map(role -> roleRepository.findByName(role.getName())
+                .orElseThrow(() -> new RuntimeException("Role name not found"))).toList();
 
-        var company = companyRepository.findById(command.getCompanyId()).orElseThrow(() -> new RuntimeException("Company id not found"));
+        var company = companyRepository.findById(command.getCompanyId())
+                .orElseThrow(() -> new RuntimeException("Company id not found"));
 
-        var user = new User(company, command.fullName(), command.emailAddress(), hashingService.encode(command.passwordHash()), roles);
+        var user = new User(company, command.fullName(), command.emailAddress(),
+                hashingService.encode(command.passwordHash()), roles);
         userRepository.save(user);
         return userRepository.findByEmailAddress(command.emailAddress());
     }

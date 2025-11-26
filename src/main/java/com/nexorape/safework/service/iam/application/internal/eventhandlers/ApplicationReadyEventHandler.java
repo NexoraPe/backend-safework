@@ -21,10 +21,10 @@ public class ApplicationReadyEventHandler {
     private final RoleCommandService roleCommandService;
     private final CompanyCommandService companyCommandService;
 
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationReadyEventHandler.class);
 
-    public ApplicationReadyEventHandler(RoleCommandService roleCommandService, CompanyCommandService companyCommandService) {
+    public ApplicationReadyEventHandler(RoleCommandService roleCommandService,
+            CompanyCommandService companyCommandService) {
         this.roleCommandService = roleCommandService;
         this.companyCommandService = companyCommandService;
     }
@@ -32,23 +32,23 @@ public class ApplicationReadyEventHandler {
     /**
      * Handle the ApplicationReadyEvent
      * This method is used to seed the roles
+     * 
      * @param event the ApplicationReadyEvent the event to handle
      */
     @EventListener
     public void on(ApplicationReadyEvent event) {
         var applicationName = event.getApplicationContext().getId();
+
         LOGGER.info("Starting to verify if roles seeding is needed for {} at {}", applicationName, currentTimestamp());
         var seedRolesCommand = new SeedRolesCommand();
         roleCommandService.handle(seedRolesCommand);
         LOGGER.info("Roles seeding verification finished for {} at {}", applicationName, currentTimestamp());
 
-
+        LOGGER.info("Starting to verify if test companies seeding is needed for {} at {}", applicationName,
+                currentTimestamp());
         var seedCompaniesCommand = new SeedCompaniesCommand();
         companyCommandService.handle(seedCompaniesCommand);
-
-        LOGGER.info("Adding default companies for testing {} at {}", applicationName, currentTimestamp());
-
-
+        LOGGER.info("Companies seeding verification finished for {} at {}", applicationName, currentTimestamp());
     }
 
     private Timestamp currentTimestamp() {
