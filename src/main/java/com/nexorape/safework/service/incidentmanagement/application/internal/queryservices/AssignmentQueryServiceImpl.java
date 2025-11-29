@@ -29,4 +29,10 @@ public class AssignmentQueryServiceImpl implements AssignmentQueryService {
         return assignmentRepository.findAll();
     }
 
+    @Override
+    public List<Assignment> handle(
+            com.nexorape.safework.service.incidentmanagement.domain.model.queries.assignment.GetAssignmentsByUserIdQuery query) {
+        return assignmentRepository.findByUserId(query.userId());
+    }
+
 }

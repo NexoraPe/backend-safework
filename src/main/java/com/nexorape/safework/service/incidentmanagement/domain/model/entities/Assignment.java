@@ -15,6 +15,7 @@ public class Assignment extends AuditableModel {
 
     // ATRIBUTOS
     /**/
+    @Getter
     @OneToOne
     @JoinColumn(name = "fk_incident_id", unique = true, nullable = false)
     private Incident incident;

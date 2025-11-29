@@ -23,68 +23,76 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/v1/assignments", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Assignments", description = "Assignments Management Endpoints")
 public class AssignmentsController {
-    private final IncidentCommandService incidentCommandService;
-    private final AssignmentQueryService assignmentQueryService;
+        private final IncidentCommandService incidentCommandService;
+        private final AssignmentQueryService assignmentQueryService;
 
-    public AssignmentsController(IncidentCommandService incidentCommandService,
-            AssignmentQueryService assignmentQueryService) {
-        this.incidentCommandService = incidentCommandService;
-        this.assignmentQueryService = assignmentQueryService;
-    }
-
-    @PostMapping
-    @Operation(summary = "Create A New Assignment")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Assignment created"),
-            @ApiResponse(responseCode = "400", description = "Bad request") })
-    public ResponseEntity<AssignmentResource> createAssignment(@RequestBody CreateAssignmentResource resource) {
-        var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext()
-                .getAuthentication();
-        var userDetails = (com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl) authentication
-                .getPrincipal();
-
-        var createAssignmentCommand = CreateAssignmentCommandFromResourceAssembler.toCommandFromResource(resource,
-                userDetails.getId());
-
-        var assignment = incidentCommandService.handle(createAssignmentCommand);
-
-        // Validacion simple
-        if (assignment.isEmpty())
-            return ResponseEntity.badRequest().build();
-
-        var createdAssignment = assignment.get();
-
-        var assignmentResource = AssignmentResourceFromEntityAssembler.toResourceFromEntity(createdAssignment);
-
-        return new ResponseEntity<>(assignmentResource, HttpStatus.CREATED);
-    }
-
-    @GetMapping
-    @Operation(summary = "Get All Assignments")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Assignments fetched!"),
-            @ApiResponse(responseCode = "400", description = "Bad request") })
-    public ResponseEntity getAllAssignments() {
-        var getAllAssignmentsQuery = new GetAllAssignmentsQuery();
-        var assignments = assignmentQueryService.handle(getAllAssignmentsQuery);
-        var assignmentsResource = assignments.stream().map(AssignmentResourceFromEntityAssembler::toResourceFromEntity)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(assignmentsResource);
-    }
-
-    @GetMapping("/{assignmentId}")
-    @Operation(summary = "Get Assignment By Id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "A assignment has been fetched!"),
-            @ApiResponse(responseCode = "400", description = "Bad request") })
-    public ResponseEntity<AssignmentResource> getAssignmentById(@PathVariable Long assignmentId) {
-        var getAssignmentByIdQuery = new GetAssignmentByIdQuery(assignmentId);
-        var assignment = assignmentQueryService.handle(getAssignmentByIdQuery);
-        if (assignment.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        public AssignmentsController(IncidentCommandService incidentCommandService,
+                        AssignmentQueryService assignmentQueryService) {
+                this.incidentCommandService = incidentCommandService;
+                this.assignmentQueryService = assignmentQueryService;
         }
-        var assignmentResource = AssignmentResourceFromEntityAssembler.toResourceFromEntity(assignment.get());
-        return ResponseEntity.ok(assignmentResource);
-    }
+
+        @PostMapping
+        @Operation(summary = "Create A New Assignment")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "201", description = "Assignment created"),
+                        @ApiResponse(responseCode = "400", description = "Bad request") })
+        public ResponseEntity<AssignmentResource> createAssignment(@RequestBody CreateAssignmentResource resource) {
+                var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                                .getAuthentication();
+                var userDetails = (com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl) authentication
+                                .getPrincipal();
+
+                var createAssignmentCommand = CreateAssignmentCommandFromResourceAssembler.toCommandFromResource(
+                                resource,
+                                userDetails.getId());
+
+                var assignment = incidentCommandService.handle(createAssignmentCommand);
+
+                // Validacion simple
+                if (assignment.isEmpty())
+                        return ResponseEntity.badRequest().build();
+
+                var createdAssignment = assignment.get();
+
+                var assignmentResource = AssignmentResourceFromEntityAssembler.toResourceFromEntity(createdAssignment);
+
+                return new ResponseEntity<>(assignmentResource, HttpStatus.CREATED);
+        }
+
+        @GetMapping
+        @Operation(summary = "Get All Assignments")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "201", description = "Assignments fetched!"),
+                        @ApiResponse(responseCode = "400", description = "Bad request") })
+        public ResponseEntity getAllAssignments() {
+                var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                                .getAuthentication();
+                var userDetails = (com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl) authentication
+                                .getPrincipal();
+
+                var getAssignmentsByUserIdQuery = new com.nexorape.safework.service.incidentmanagement.domain.model.queries.assignment.GetAssignmentsByUserIdQuery(
+                                userDetails.getId());
+                var assignments = assignmentQueryService.handle(getAssignmentsByUserIdQuery);
+                var assignmentsResource = assignments.stream()
+                                .map(AssignmentResourceFromEntityAssembler::toResourceFromEntity)
+                                .collect(Collectors.toList());
+                return ResponseEntity.ok(assignmentsResource);
+        }
+
+        @GetMapping("/{assignmentId}")
+        @Operation(summary = "Get Assignment By Id")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "201", description = "A assignment has been fetched!"),
+                        @ApiResponse(responseCode = "400", description = "Bad request") })
+        public ResponseEntity<AssignmentResource> getAssignmentById(@PathVariable Long assignmentId) {
+                var getAssignmentByIdQuery = new GetAssignmentByIdQuery(assignmentId);
+                var assignment = assignmentQueryService.handle(getAssignmentByIdQuery);
+                if (assignment.isEmpty()) {
+                        return ResponseEntity.notFound().build();
+                }
+                var assignmentResource = AssignmentResourceFromEntityAssembler.toResourceFromEntity(assignment.get());
+                return ResponseEntity.ok(assignmentResource);
+        }
 
 }

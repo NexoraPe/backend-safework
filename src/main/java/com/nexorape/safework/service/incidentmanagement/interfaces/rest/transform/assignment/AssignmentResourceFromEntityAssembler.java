@@ -4,12 +4,12 @@ import com.nexorape.safework.service.incidentmanagement.domain.model.entities.As
 import com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.assignment.AssignmentResource;
 
 public class AssignmentResourceFromEntityAssembler {
-    public  static AssignmentResource toResourceFromEntity(Assignment entity){
+    public static AssignmentResource toResourceFromEntity(Assignment entity) {
         return new AssignmentResource(
                 entity.getIncidentId(),
                 entity.getUserId(),
+                entity.getIncident().getTitle(),
                 entity.getPriority(),
-                entity.getCompletionDate()
-        );
+                entity.getCompletionDate());
     }
 }
