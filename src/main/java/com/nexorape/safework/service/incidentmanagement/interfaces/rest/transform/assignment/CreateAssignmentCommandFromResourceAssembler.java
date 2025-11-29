@@ -4,10 +4,9 @@ import com.nexorape.safework.service.incidentmanagement.domain.model.commands.as
 import com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.assignment.CreateAssignmentResource;
 
 public class CreateAssignmentCommandFromResourceAssembler {
-    public static CreateAssignmentCommand toCommandFromResource(CreateAssignmentResource resource) {
+    public static CreateAssignmentCommand toCommandFromResource(CreateAssignmentResource resource, Long userId) {
         return new CreateAssignmentCommand(
                 resource.incidentId(),
-                resource.userId()
-        );
+                userId);
     }
 }

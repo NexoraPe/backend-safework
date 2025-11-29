@@ -75,6 +75,12 @@ public class IncidentCommandServiceImpl implements IncidentCommandService {
                                         "Error: Solo se pueden asignar incidentes a usuarios con rol EMPLOYEER.");
                 }
 
+                // VALIDACIÓN DE SEGURIDAD CRUZADA (Cross-Company Check)
+                if (!incident.getCompanyId().equals(user.getCompanyId())) {
+                        throw new IllegalArgumentException(
+                                        "Error: No puedes asignarte incidentes de otra empresa.");
+                }
+
                 incident.assignTo(user);
 
                 // NO LLAMAR AL REPOSITORIO DE ASSIGMENT, EL INCIDENT YA SE ENCARGA DE LA
