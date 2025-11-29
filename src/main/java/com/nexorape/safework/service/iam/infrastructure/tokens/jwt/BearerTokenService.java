@@ -34,5 +34,7 @@ public interface BearerTokenService extends TokenService {
 
     Long getCompanyIdFromToken(String token);
 
+    Long getUserIdFromToken(String token);
+
     String getRoleFromToken(String token);
 }

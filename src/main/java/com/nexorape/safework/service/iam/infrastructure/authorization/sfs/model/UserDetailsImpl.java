@@ -29,6 +29,7 @@ public class UserDetailsImpl implements UserDetails {
     private final boolean enabled;
     private final Collection<? extends GrantedAuthority> authorities;
     private final Long companyId;
+    private final Long id;
 
     /**
      * This constructor initializes the UserDetailsImpl object.
@@ -37,13 +38,15 @@ public class UserDetailsImpl implements UserDetails {
      * @param password    The password.
      * @param authorities The authorities.
      * @param companyId   The companyId.
+     * @param id          The user id.
      */
     public UserDetailsImpl(String username, String password, Collection<? extends GrantedAuthority> authorities,
-            Long companyId) {
+            Long companyId, Long id) {
         this.username = username;
         this.password = password;
         this.authorities = authorities;
         this.companyId = companyId;
+        this.id = id;
         this.accountNonExpired = true;
         this.accountNonLocked = true;
         this.credentialsNonExpired = true;
@@ -66,6 +69,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getEmail(),
                 user.getPasswordHash(),
                 authorities,
-                user.getCompanyId());
+                user.getCompanyId(),
+                user.getId());
     }
 }

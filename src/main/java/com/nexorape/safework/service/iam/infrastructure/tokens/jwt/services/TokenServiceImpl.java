@@ -51,8 +51,9 @@ public class TokenServiceImpl implements BearerTokenService {
         var userDetails = (com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl) authentication
                 .getPrincipal();
         var companyId = userDetails.getCompanyId();
+        var userId = userDetails.getId();
         var role = userDetails.getAuthorities().stream().findFirst().map(Object::toString).orElse("WORKER");
-        return buildTokenWithClaims(authentication.getName(), companyId, role);
+        return buildTokenWithClaims(authentication.getName(), companyId, userId, role);
     }
 
     /**
@@ -68,6 +69,7 @@ public class TokenServiceImpl implements BearerTokenService {
     public String generateToken(User user) {
         // 1. Extraemos el Company ID
         Long companyId = user.getCompanyId();
+        Long userId = user.getId();
 
         // 2. Extraemos el Rol
         String role = user.getRoles().stream()
@@ -76,16 +78,17 @@ public class TokenServiceImpl implements BearerTokenService {
                 .orElse("WORKER");
 
         // 3. Construimos el token VIP
-        return buildTokenWithClaims(user.getEmail(), companyId, role);
+        return buildTokenWithClaims(user.getEmail(), companyId, userId, role);
     }
 
-    private String buildTokenWithClaims(String username, Long companyId, String role) {
+    private String buildTokenWithClaims(String username, Long companyId, Long userId, String role) {
         var issuedAt = new Date();
         var expiration = DateUtils.addDays(issuedAt, expirationDays);
         var key = getSigningKey();
         return Jwts.builder()
                 .subject(username)
                 .claim("companyId", companyId)
+                .claim("userId", userId)
                 .claim("role", role)
                 .issuedAt(issuedAt)
                 .expiration(expiration)
@@ -126,6 +129,11 @@ public class TokenServiceImpl implements BearerTokenService {
     @Override
     public Long getCompanyIdFromToken(String token) {
         return extractClaim(token, claims -> claims.get("companyId", Long.class));
+    }
+
+    @Override
+    public Long getUserIdFromToken(String token) {
+        return extractClaim(token, claims -> claims.get("userId", Long.class));
     }
 
     @Override

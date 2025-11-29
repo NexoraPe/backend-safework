@@ -6,7 +6,7 @@ import com.nexorape.safework.service.incidentmanagement.domain.services.Incident
 import com.nexorape.safework.service.incidentmanagement.domain.services.IncidentQueryService;
 import com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.incident.CreateIncidentResource;
 import com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.incident.IncidentResource;
-import com.nexorape.safework.service.incidentmanagement.interfaces.rest.transform.incidents.CreateIncidentCommandFromResourceAssembler;
+
 import com.nexorape.safework.service.incidentmanagement.interfaces.rest.transform.incidents.IncidentResourceFromEntityAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -38,7 +38,17 @@ public class IncidentsController {
             @ApiResponse(responseCode = "201", description = "Incident created"),
             @ApiResponse(responseCode = "400", description = "Bad request") })
     public ResponseEntity<IncidentResource> createIncident(@RequestBody CreateIncidentResource resource) {
-        var createIncidentCommand = CreateIncidentCommandFromResourceAssembler.toCommandFromResource(resource);
+        var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                .getAuthentication();
+        var userDetails = (com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl) authentication
+                .getPrincipal();
+
+        var createIncidentCommand = new com.nexorape.safework.service.incidentmanagement.domain.model.commands.incident.CreateIncidentCommand(
+                userDetails.getId(),
+                userDetails.getCompanyId(),
+                resource.title(),
+                resource.description(),
+                resource.location());
 
         var incident = incidentCommandService.handle(createIncidentCommand);
 

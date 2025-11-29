@@ -46,12 +46,13 @@ public class BearerAuthorizationRequestFilter extends OncePerRequestFilter {
             if (token != null && tokenService.validateToken(token)) {
                 String username = tokenService.getUsernameFromToken(token);
                 Long companyId = tokenService.getCompanyIdFromToken(token);
+                Long userId = tokenService.getUserIdFromToken(token);
                 String role = tokenService.getRoleFromToken(token);
 
                 var authorities = java.util.List
                         .of(new org.springframework.security.core.authority.SimpleGrantedAuthority(role));
                 var userDetails = new com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl(
-                        username, "", authorities, companyId);
+                        username, "", authorities, companyId, userId);
 
                 SecurityContextHolder.getContext()
                         .setAuthentication(UsernamePasswordAuthenticationTokenBuilder.build(userDetails, request));
