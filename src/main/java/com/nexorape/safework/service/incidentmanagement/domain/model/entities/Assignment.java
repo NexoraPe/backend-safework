@@ -13,13 +13,14 @@ import java.util.Date;
 @Entity
 public class Assignment extends AuditableModel {
 
-    //ATRIBUTOS
+    // ATRIBUTOS
     /**/
     @OneToOne
     @JoinColumn(name = "fk_incident_id", unique = true, nullable = false)
     private Incident incident;
 
     /**/
+    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_to_user_id", nullable = false)
     private User user;
@@ -34,7 +35,7 @@ public class Assignment extends AuditableModel {
     @Column(updatable = false)
     private Date completionDate;
 
-    //CONSTRUCTORES
+    // CONSTRUCTORES
     public Assignment() {
         this.priority = AssignmentPriority.MEDIUM;
     }
@@ -49,7 +50,7 @@ public class Assignment extends AuditableModel {
         this();
     }
 
-    //METODOS
+    // METODOS
     public Long getIncidentId() {
         return incident.getId();
     }
@@ -58,7 +59,7 @@ public class Assignment extends AuditableModel {
         return user.getId();
     }
 
-    public String getPriority(){
+    public String getPriority() {
         return priority.name();
     }
 

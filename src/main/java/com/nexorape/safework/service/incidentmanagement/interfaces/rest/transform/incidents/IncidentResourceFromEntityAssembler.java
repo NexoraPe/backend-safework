@@ -5,7 +5,7 @@ import com.nexorape.safework.service.incidentmanagement.interfaces.rest.resource
 
 public class IncidentResourceFromEntityAssembler {
     public static IncidentResource toResourceFromEntity(Incident entity) {
-        return new  IncidentResource(
+        return new IncidentResource(
                 entity.getId(),
                 entity.getUserId(),
                 entity.getCompanyId(),
@@ -13,7 +13,8 @@ public class IncidentResourceFromEntityAssembler {
                 entity.getDescription(),
                 entity.getLocation(),
                 entity.getStatus(),
-                entity.getDocumentUrl()
-        );
+                entity.getDocumentUrl(),
+                entity.getUser().getFullName(),
+                entity.getAssignment() != null ? entity.getAssignment().getUser().getFullName() : null);
     }
 }

@@ -2,7 +2,6 @@ package com.nexorape.safework.service.incidentmanagement.infrastructure.persiste
 
 import java.util.List;
 
-import com.nexorape.safework.service.iam.domain.model.aggregates.Company;
 import com.nexorape.safework.service.incidentmanagement.domain.model.aggregates.Incident;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,5 +9,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IncidentRepository extends JpaRepository<Incident, Long> {
 
-    List<Incident> findAllByCompany(Company company);
+    @org.springframework.data.jpa.repository.Query("SELECT i FROM Incident i JOIN FETCH i.user LEFT JOIN FETCH i.assignment a LEFT JOIN FETCH a.user")
+    List<Incident> findAll();
+
+    @org.springframework.data.jpa.repository.Query("SELECT i FROM Incident i JOIN FETCH i.user LEFT JOIN FETCH i.assignment a LEFT JOIN FETCH a.user WHERE i.company.id = :companyId")
+    List<Incident> findByCompanyId(Long companyId);
 }

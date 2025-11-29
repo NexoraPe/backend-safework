@@ -1,6 +1,5 @@
 package com.nexorape.safework.service.incidentmanagement.application.internal.queryservices;
 
-import com.nexorape.safework.service.iam.infrastructure.persistence.jpa.repositories.CompanyRepository;
 import com.nexorape.safework.service.incidentmanagement.domain.model.aggregates.Incident;
 import com.nexorape.safework.service.incidentmanagement.domain.model.queries.incident.GetAllIncidentsByCompanyQuery;
 import com.nexorape.safework.service.incidentmanagement.domain.model.queries.incident.GetAllIncidentsQuery;
@@ -16,11 +15,9 @@ import java.util.Optional;
 public class IncidentQueryServiceImpl implements IncidentQueryService {
 
     private final IncidentRepository incidentRepository;
-    private final CompanyRepository companyRepository;
 
-    public IncidentQueryServiceImpl(IncidentRepository incidentRepository, CompanyRepository companyRepository) {
+    public IncidentQueryServiceImpl(IncidentRepository incidentRepository) {
         this.incidentRepository = incidentRepository;
-        this.companyRepository = companyRepository;
     }
 
     // QUERIES
@@ -41,18 +38,14 @@ public class IncidentQueryServiceImpl implements IncidentQueryService {
         if (role.equals("ADMIN")) {
             return incidentRepository.findAll();
         } else {
-
-            var company = companyRepository.findById(userDetails.getCompanyId());
-
-            return incidentRepository.findAllByCompany(company.get());
-
+            return incidentRepository.findByCompanyId(userDetails.getCompanyId());
         }
     }
 
     @Override
     public List<Incident> handle(GetAllIncidentsByCompanyQuery query) {
 
-        return incidentRepository.findAllByCompany(query.company());
+        return incidentRepository.findByCompanyId(query.company().getId());
     }
 
 }

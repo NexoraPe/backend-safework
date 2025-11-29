@@ -14,6 +14,7 @@ public class Incident extends AuditableAbstractAggregateRoot<Incident> {
 
     // ATRIBUTOS
     /**/
+    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_user_id", nullable = false)
     private User user;
