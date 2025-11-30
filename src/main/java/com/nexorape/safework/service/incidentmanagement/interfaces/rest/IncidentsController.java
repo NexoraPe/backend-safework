@@ -108,18 +108,32 @@ public class IncidentsController {
             @ApiResponse(responseCode = "200", description = "Incident closed"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "Incident not found") })
-    public ResponseEntity<?> closeIncident(@PathVariable Long incidentId, @RequestParam Long userId) {
+    public ResponseEntity<?> closeIncident(
+            @PathVariable Long incidentId,
+            @RequestParam Long userId,
+            @RequestParam(required = false) String documentUrl
+    ) {
         try {
-            var command = new com.nexorape.safework.service.incidentmanagement.domain.model.commands.incident.CloseIncidentCommand(
-                    incidentId, userId);
+            var command =
+                    new com.nexorape.safework.service.incidentmanagement.domain.model.commands.incident.CloseIncidentCommand(
+                            incidentId,
+                            userId,
+                            documentUrl
+                    );
+
             var incident = incidentCommandService.handle(command);
             if (incident.isEmpty())
                 return ResponseEntity.notFound().build();
-            return ResponseEntity.ok(IncidentResourceFromEntityAssembler.toResourceFromEntity(incident.get()));
+
+            return ResponseEntity.ok(
+                    IncidentResourceFromEntityAssembler.toResourceFromEntity(incident.get())
+            );
+
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
 }
