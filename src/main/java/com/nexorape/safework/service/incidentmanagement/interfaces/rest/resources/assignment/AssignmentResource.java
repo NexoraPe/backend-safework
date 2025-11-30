@@ -3,9 +3,11 @@ package com.nexorape.safework.service.incidentmanagement.interfaces.rest.resourc
 import java.util.Date;
 
 public record AssignmentResource(
-                Long incidentId,
-                Long userId,
-                String incidentTitle,
-                String priority,
-                Date completionDate) {
+        Long incidentId,
+        Long userId,
+        String incidentTitle,
+        String status,
+        Date assignedAt,
+        String priority,
+        Date completionDate) {
 }

@@ -9,6 +9,8 @@ public class AssignmentResourceFromEntityAssembler {
                 entity.getIncidentId(),
                 entity.getUserId(),
                 entity.getIncident().getTitle(),
+                entity.getIncident().getStatus(),
+                entity.getCreatedAt(),
                 entity.getPriority(),
                 entity.getCompletionDate());
     }
