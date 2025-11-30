@@ -8,6 +8,12 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
+/**
+ * Notification entity representing a system-generated message sent to a user.
+ * Stores basic metadata such as subject, body, status, and timestamps.
+ */
+
 @Entity
 @Getter
 @NoArgsConstructor
