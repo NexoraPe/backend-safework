@@ -6,6 +6,7 @@ import com.nexorape.safework.service.incidentmanagement.interfaces.rest.resource
 public class AssignmentResourceFromEntityAssembler {
     public static AssignmentResource toResourceFromEntity(Assignment entity) {
         return new AssignmentResource(
+                entity.getId(),
                 entity.getIncidentId(),
                 entity.getUserId(),
                 entity.getIncident().getTitle(),
