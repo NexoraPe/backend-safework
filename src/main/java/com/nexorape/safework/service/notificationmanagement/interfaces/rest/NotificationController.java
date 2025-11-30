@@ -28,6 +28,13 @@ public class NotificationController {
         this.notificationAssembler = notificationAssembler;
     }
 
+     /**
+     * Returns all notifications belonging to a specific user, sorted by creation time.
+     *
+     * @param userId ID of the authenticated user requesting their notifications.
+     * @return List of NotificationResponse objects.
+     */
+
     @GetMapping("/my-notifications")
     @Operation(summary = "Get My Notifications")
     public ResponseEntity<List<NotificationResponse>> getMyNotifications(@RequestParam String userId) {
