@@ -12,10 +12,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/*
+ Query service for companies (IAM).
+ Provides read operations: by id, name, registration code, and list all.
+ Delegates data access to CompanyRepository.
+ */
+
 @Service
 public class CompanyQueryServiceImpl implements CompanyQueryService {
 
-    // Repositorio
+    // Repository
     private final CompanyRepository companyRepository;
 
     // Constructor

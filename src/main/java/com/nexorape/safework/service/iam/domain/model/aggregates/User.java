@@ -18,7 +18,7 @@ import java.util.Set;
 @Setter
 @Entity
 public class User extends AuditableAbstractAggregateRoot<User> {
-    // ATRIBUTOS LMAO
+    // Attributes
     /**/
     // @Embedded
     // @AttributeOverrides({
@@ -54,7 +54,7 @@ public class User extends AuditableAbstractAggregateRoot<User> {
     @Getter
     private String profilePictureUrl;
 
-    // CONSTRUCTORES
+    // Constructors
     /**
      * Default constructor
      */
@@ -62,9 +62,6 @@ public class User extends AuditableAbstractAggregateRoot<User> {
         this.roles = new HashSet<>();
     }
 
-    /**
-     * Sobrecargado constructor
-     */
     public User(Company company, String fullName, EmailAddress emailAddress, String passwordHash, List<Role> roles) {
         this();
         this.company = company;
@@ -74,20 +71,7 @@ public class User extends AuditableAbstractAggregateRoot<User> {
         addRoles(roles);
     }
 
-    // METODOS
-    // public void updatePersonalInfo(String fullName, String phoneNumber) {
-    // this.fullName = fullName;
-    // this.phoneNumber = phoneNumber;
-    // }
-    //
-    // public void updateProfilePicture(String profilePictureUrl) {
-    // this.profilePictureUrl = profilePictureUrl;
-    // }
-    //
-    // public void updatePasswordHash(String passwordHash) {
-    // this.passwordHash = passwordHash;
-    // }
-
+    // Methods
     /**
      * Add a role to the user
      * 

@@ -7,6 +7,12 @@ import com.nexorape.safework.service.notificationmanagement.infrastructure.persi
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * Listens to Incident domain events and creates Notification records accordingly.
+ * This component reacts to events from the Incident Management context and
+ * persists notifications without containing business logic.
+ */
+
 @Component
 public class NotificationEventListener {
 

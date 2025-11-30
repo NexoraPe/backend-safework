@@ -9,6 +9,8 @@ import javax.sql.DataSource;
 @Configuration
 public class FlywayConfiguration {
 
+    // Initialize Flyway with the application's DataSource and execute migrations.
+    // baselineOnMigrate(true) allows applying migrations on an existing non-empty database by creating a baseline.
     @Autowired
     public FlywayConfiguration(DataSource dataSource) {
         Flyway.configure().baselineOnMigrate(true).dataSource(dataSource).load().migrate();
