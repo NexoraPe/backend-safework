@@ -11,6 +11,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Application service implementation that handles company-related commands in the IAM context.
+ * - Creates companies via CreateCompanyCommand.
+ * - Seeds default companies via SeedCompaniesCommand.
+ * Delegates persistence to CompanyRepository.
+ */
+
 @Service
 public class CompanyCommandServiceImpl implements CompanyCommandService {
 
