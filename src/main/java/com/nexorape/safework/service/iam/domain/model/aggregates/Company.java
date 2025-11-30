@@ -1,6 +1,5 @@
 package com.nexorape.safework.service.iam.domain.model.aggregates;
 
-//Por defecto
 import com.nexorape.safework.service.iam.domain.model.commands.company.CreateCompanyCommand;
 import com.nexorape.safework.service.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
@@ -9,22 +8,21 @@ import lombok.Getter;
 //Value Objects
 import com.nexorape.safework.service.iam.domain.model.valueobjects.company.RegistrationCode;
 
-
 @Entity
 public class Company extends AuditableAbstractAggregateRoot<Company> {
 
-    // ATRIBUTOS LMAO
+    // Attributes
     /**/
     @Getter
     private String name;
 
     /**/
-    @Embedded /*Es para value Objects, tiene que tener @Embeddable el value Object*/
+    @Embedded /*For the Value Objects, need to have the tag @Embeddable in the  value Object*/
     @AttributeOverrides({
             @AttributeOverride(name = "code", column = @Column(name = "registration_code"))})
     private RegistrationCode registrationCode;
 
-    // CONSTRUCTORES
+    // Constructors 
     /*Por defecto*/
     public Company() {
     }
@@ -40,7 +38,7 @@ public class Company extends AuditableAbstractAggregateRoot<Company> {
         this.registrationCode = new RegistrationCode();
     }
 
-    // METODOS
+    // Methods
     /*GETTERS*/
     /**
      * Company registrationCode getter
