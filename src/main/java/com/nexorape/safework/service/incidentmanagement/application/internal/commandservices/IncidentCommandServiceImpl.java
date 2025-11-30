@@ -108,8 +108,8 @@ public class IncidentCommandServiceImpl implements IncidentCommandService {
         public Optional<Incident> handle(CloseIncidentCommand command) {
                 var incident = incidentRepository.findById(command.incidentId())
                                 .orElseThrow(() -> new RuntimeException("Incident not found"));
-                incident.close();
-                incidentRepository.save(incident);
+            incident.closeWithDocument(command.documentUrl());
+            incidentRepository.save(incident);
                 eventPublisher.publishEvent(new IncidentStatusChangedEvent(
                                 incident.getId(),
                                 incident.getStatus(),
