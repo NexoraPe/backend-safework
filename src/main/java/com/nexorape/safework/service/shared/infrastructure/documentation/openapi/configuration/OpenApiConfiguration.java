@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+// OpenAPI/Swagger configuration for the service.
+// Defines API metadata and a Bearer JWT security scheme.
 @Configuration
 public class OpenApiConfiguration {
-    // Properties
+    // Injected application metadata used in the OpenAPI info section
     @Value("${spring.application.name}")
     String applicationName;
 
@@ -27,7 +29,7 @@ public class OpenApiConfiguration {
 
     @Bean
     public OpenAPI learningPlatformOpenApi() {
-        // General configuration
+        // Build base OpenAPI object with general information
         var openApi = new OpenAPI();
         openApi
                 .info(new Info()
@@ -36,11 +38,12 @@ public class OpenApiConfiguration {
                         .version(this.applicationVersion)
                         .license(new License().name("Apache 2.0")
                                 .url("https://springdoc.org")))
+                // Link to external documentation
                 .externalDocs(new ExternalDocumentation()
                         .description("ACME Learning Platform wiki Documentation")
                         .url("https://acme-learning-platform.wiki.github.io/docs"));
 
-        // Add a security scheme
+        // Add a HTTP Bearer auth (JWT) security scheme and apply it globally
         final String securitySchemeName = "bearerAuth";
 
         openApi.addSecurityItem(new SecurityRequirement()
