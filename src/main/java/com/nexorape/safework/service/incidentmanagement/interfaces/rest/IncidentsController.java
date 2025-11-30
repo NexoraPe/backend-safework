@@ -97,10 +97,15 @@ public class IncidentsController {
             @ApiResponse(responseCode = "200", description = "Incident started"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "Incident not found") })
-    public ResponseEntity<?> startIncident(@PathVariable Long incidentId, @RequestParam Long userId) {
+    public ResponseEntity<?> startIncident(@PathVariable Long incidentId) {
         try {
+            var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                    .getAuthentication();
+            var userDetails = (com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl) authentication
+                    .getPrincipal();
+
             var command = new com.nexorape.safework.service.incidentmanagement.domain.model.commands.incident.StartIncidentProgressCommand(
-                    incidentId, userId);
+                    incidentId, userDetails.getId());
             var incident = incidentCommandService.handle(command);
             if (incident.isEmpty())
                 return ResponseEntity.notFound().build();
@@ -118,10 +123,15 @@ public class IncidentsController {
             @ApiResponse(responseCode = "200", description = "Incident closed"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "Incident not found") })
-    public ResponseEntity<?> closeIncident(@PathVariable Long incidentId, @RequestParam Long userId) {
+    public ResponseEntity<?> closeIncident(@PathVariable Long incidentId) {
         try {
+            var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                    .getAuthentication();
+            var userDetails = (com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl) authentication
+                    .getPrincipal();
+
             var command = new com.nexorape.safework.service.incidentmanagement.domain.model.commands.incident.CloseIncidentCommand(
-                    incidentId, userId);
+                    incidentId, userDetails.getId());
             var incident = incidentCommandService.handle(command);
             if (incident.isEmpty())
                 return ResponseEntity.notFound().build();
