@@ -64,4 +64,8 @@ public class Assignment extends AuditableModel {
         return priority.name();
     }
 
+    public void updatePriority(AssignmentPriority priority) {
+        this.priority = priority;
+    }
+
 }

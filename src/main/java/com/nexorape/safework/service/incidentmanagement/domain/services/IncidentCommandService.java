@@ -23,4 +23,10 @@ public interface IncidentCommandService {
     Optional<Incident> handle(StartIncidentProgressCommand command);
 
     Optional<Incident> handle(CloseIncidentCommand command);
+
+    Optional<Assignment> handle(
+            com.nexorape.safework.service.incidentmanagement.domain.model.commands.assignment.UpdateAssignmentPriorityCommand command);
+
+    Optional<Incident> handle(
+            com.nexorape.safework.service.incidentmanagement.domain.model.commands.incident.UpdateIncidentDocumentCommand command);
 }

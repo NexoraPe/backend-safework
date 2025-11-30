@@ -113,4 +113,8 @@ public class Incident extends AuditableAbstractAggregateRoot<Incident> {
         this.status = IncidentStatus.CLOSED;
     }
 
+    public void updateDocumentUrl(String documentUrl) {
+        this.documentUrl = documentUrl;
+    }
+
 }

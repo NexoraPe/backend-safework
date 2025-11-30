@@ -142,4 +142,26 @@ public class IncidentsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @PatchMapping("/{incidentId}/document")
+    @Operation(summary = "Update Incident Document")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Incident document updated"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Incident not found") })
+    public ResponseEntity<?> updateDocument(@PathVariable Long incidentId,
+            @RequestBody com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.incident.UpdateIncidentDocumentResource resource) {
+        try {
+            var command = new com.nexorape.safework.service.incidentmanagement.domain.model.commands.incident.UpdateIncidentDocumentCommand(
+                    incidentId, resource.documentUrl());
+            var incident = incidentCommandService.handle(command);
+            if (incident.isEmpty())
+                return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(IncidentResourceFromEntityAssembler.toResourceFromEntity(incident.get()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }

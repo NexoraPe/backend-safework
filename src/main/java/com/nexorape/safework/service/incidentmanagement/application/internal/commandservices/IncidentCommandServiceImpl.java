@@ -12,6 +12,7 @@ import com.nexorape.safework.service.incidentmanagement.domain.model.commands.in
 import com.nexorape.safework.service.incidentmanagement.domain.model.entities.Assignment;
 import com.nexorape.safework.service.incidentmanagement.domain.model.events.IncidentStatusChangedEvent;
 import com.nexorape.safework.service.incidentmanagement.domain.services.IncidentCommandService;
+import com.nexorape.safework.service.incidentmanagement.infrastructure.persistence.jpa.repositories.AssignmentRepository;
 import com.nexorape.safework.service.incidentmanagement.infrastructure.persistence.jpa.repositories.IncidentRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +22,18 @@ import java.util.Optional;
 public class IncidentCommandServiceImpl implements IncidentCommandService {
 
         private final IncidentRepository incidentRepository;
+        private final AssignmentRepository assignmentRepository;
         private final UserRepository userRepository;
         private final CompanyRepository companyRepository;
         private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-        public IncidentCommandServiceImpl(IncidentRepository incidentRepository, UserRepository userRepository,
+        public IncidentCommandServiceImpl(IncidentRepository incidentRepository,
+                        AssignmentRepository assignmentRepository,
+                        UserRepository userRepository,
                         CompanyRepository companyRepository,
                         org.springframework.context.ApplicationEventPublisher eventPublisher) {
                 this.incidentRepository = incidentRepository;
+                this.assignmentRepository = assignmentRepository;
                 this.userRepository = userRepository;
                 this.companyRepository = companyRepository;
                 this.eventPublisher = eventPublisher;
@@ -120,6 +125,28 @@ public class IncidentCommandServiceImpl implements IncidentCommandService {
                                 incident.getId(),
                                 incident.getStatus(),
                                 command.userId()));
+                return Optional.of(incident);
+        }
+
+        @Override
+        public Optional<Assignment> handle(
+                        com.nexorape.safework.service.incidentmanagement.domain.model.commands.assignment.UpdateAssignmentPriorityCommand command) {
+                var assignment = assignmentRepository.findById(command.assignmentId())
+                                .orElseThrow(() -> new RuntimeException("Assignment not found"));
+                assignment.updatePriority(
+                                com.nexorape.safework.service.incidentmanagement.domain.model.valueobjects.assignment.AssignmentPriority
+                                                .valueOf(command.priority()));
+                assignmentRepository.save(assignment);
+                return Optional.of(assignment);
+        }
+
+        @Override
+        public Optional<Incident> handle(
+                        com.nexorape.safework.service.incidentmanagement.domain.model.commands.incident.UpdateIncidentDocumentCommand command) {
+                var incident = incidentRepository.findById(command.incidentId())
+                                .orElseThrow(() -> new RuntimeException("Incident not found"));
+                incident.updateDocumentUrl(command.documentUrl());
+                incidentRepository.save(incident);
                 return Optional.of(incident);
         }
 }

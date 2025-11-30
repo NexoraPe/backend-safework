@@ -95,4 +95,27 @@ public class AssignmentsController {
                 return ResponseEntity.ok(assignmentResource);
         }
 
+        @PatchMapping("/{assignmentId}/priority")
+        @Operation(summary = "Update Assignment Priority")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Assignment priority updated"),
+                        @ApiResponse(responseCode = "400", description = "Bad request"),
+                        @ApiResponse(responseCode = "404", description = "Assignment not found") })
+        public ResponseEntity<?> updatePriority(@PathVariable Long assignmentId,
+                        @RequestBody com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.assignment.UpdateAssignmentPriorityResource resource) {
+                try {
+                        var command = new com.nexorape.safework.service.incidentmanagement.domain.model.commands.assignment.UpdateAssignmentPriorityCommand(
+                                        assignmentId, resource.priority());
+                        var assignment = incidentCommandService.handle(command);
+                        if (assignment.isEmpty())
+                                return ResponseEntity.notFound().build();
+                        return ResponseEntity.ok(
+                                        AssignmentResourceFromEntityAssembler.toResourceFromEntity(assignment.get()));
+                } catch (IllegalArgumentException e) {
+                        return ResponseEntity.badRequest().body(e.getMessage());
+                } catch (RuntimeException e) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+                }
+        }
+
 }
