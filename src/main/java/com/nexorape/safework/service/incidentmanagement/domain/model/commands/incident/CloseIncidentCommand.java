@@ -2,5 +2,7 @@ package com.nexorape.safework.service.incidentmanagement.domain.model.commands.i
 
 public record CloseIncidentCommand(
         Long incidentId,
-        Long userId) {
+        Long userId,
+        String documentUrl
+) {
 }
