@@ -106,11 +106,14 @@ public class Incident extends AuditableAbstractAggregateRoot<Incident> {
         this.status = IncidentStatus.IN_PROGRESS;
     }
 
-    public void close() {
+    public void closeWithDocument(String documentUrl) {
         if (this.status != IncidentStatus.IN_PROGRESS) {
             throw new IllegalStateException("Incident must be IN_PROGRESS to close.");
         }
+        this.documentUrl = documentUrl;
         this.status = IncidentStatus.CLOSED;
     }
+
+
 
 }
