@@ -31,13 +31,17 @@ import java.util.List;
 @Tag(name = "Users", description = "Available User Endpoints")
 public class UsersController {
     private final UserQueryService userQueryService;
+    private final com.nexorape.safework.service.iam.domain.services.user.UserCommandService userCommandService;
 
-    public UsersController(UserQueryService userQueryService) {
+    public UsersController(UserQueryService userQueryService,
+            com.nexorape.safework.service.iam.domain.services.user.UserCommandService userCommandService) {
         this.userQueryService = userQueryService;
+        this.userCommandService = userCommandService;
     }
 
     /**
      * This method returns all the users.
+     * 
      * @return a list of user resources
      * @see UserResource
      */
@@ -45,7 +49,7 @@ public class UsersController {
     @Operation(summary = "Get all users", description = "Get all the users available in the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully."),
-            @ApiResponse(responseCode = "401", description = "Unauthorized.")})
+            @ApiResponse(responseCode = "401", description = "Unauthorized.") })
     public ResponseEntity<List<UserResource>> getAllUsers() {
         var getAllUsersQuery = new GetAllUsersQuery();
         var users = userQueryService.handle(getAllUsersQuery);
@@ -55,6 +59,7 @@ public class UsersController {
 
     /**
      * This method returns the user with the given id.
+     * 
      * @param userId the user id
      * @return the user resource with the given id
      * @throws RuntimeException if the user is not found
@@ -65,7 +70,7 @@ public class UsersController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User retrieved successfully."),
             @ApiResponse(responseCode = "404", description = "User not found."),
-            @ApiResponse(responseCode = "401", description = "Unauthorized.")})
+            @ApiResponse(responseCode = "401", description = "Unauthorized.") })
     public ResponseEntity<UserResource> getUserById(@PathVariable Long userId) {
         var getUserByIdQuery = new GetUserByIdQuery(userId);
         var user = userQueryService.handle(getUserByIdQuery);
@@ -78,6 +83,7 @@ public class UsersController {
 
     /**
      * This method returns the user with the given id.
+     * 
      * @param email the user email
      * @return the user resource with the given id
      * @throws RuntimeException if the user is not found
@@ -88,7 +94,7 @@ public class UsersController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User retrieved successfully."),
             @ApiResponse(responseCode = "404", description = "User not found."),
-            @ApiResponse(responseCode = "401", description = "Unauthorized.")})
+            @ApiResponse(responseCode = "401", description = "Unauthorized.") })
     public ResponseEntity<UserResource> getUserByEmail(@PathVariable String email) {
         var getUserByEmailQuery = new GetUserByEmailQuery(new EmailAddress(email));
         var user = userQueryService.handle(getUserByEmailQuery);
@@ -97,5 +103,42 @@ public class UsersController {
         }
         var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(user.get());
         return ResponseEntity.ok(userResource);
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "Get current user profile", description = "Get the profile of the authenticated user.")
+    public ResponseEntity<UserResource> getMyProfile() {
+        var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                .getAuthentication();
+        var userDetails = (com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl) authentication
+                .getPrincipal();
+        var getUserByIdQuery = new GetUserByIdQuery(userDetails.getId());
+        var user = userQueryService.handle(getUserByIdQuery);
+        if (user.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(UserResourceFromEntityAssembler.toResourceFromEntity(user.get()));
+    }
+
+    @org.springframework.web.bind.annotation.PatchMapping("/me")
+    @Operation(summary = "Update current user profile", description = "Update the profile of the authenticated user.")
+    public ResponseEntity<UserResource> updateMyProfile(
+            @org.springframework.web.bind.annotation.RequestBody com.nexorape.safework.service.iam.interfaces.rest.resources.user.UpdateProfileResource resource) {
+        var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                .getAuthentication();
+        var userDetails = (com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl) authentication
+                .getPrincipal();
+
+        var command = new com.nexorape.safework.service.iam.domain.model.commands.user.UpdateUserProfileCommand(
+                userDetails.getId(),
+                resource.fullName(),
+                resource.phoneNumber());
+
+        var user = userCommandService.handle(command);
+
+        if (user.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(UserResourceFromEntityAssembler.toResourceFromEntity(user.get()));
     }
 }

@@ -87,4 +87,19 @@ public class UserCommandServiceImpl implements UserCommandService {
         userRepository.save(user);
         return userRepository.findByEmailAddress(command.emailAddress());
     }
+
+    @Override
+    public Optional<User> handle(
+            com.nexorape.safework.service.iam.domain.model.commands.user.UpdateUserProfileCommand command) {
+        var user = userRepository.findById(command.userId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        if (command.fullName() != null) {
+            user.setFullName(command.fullName());
+        }
+        if (command.phoneNumber() != null) {
+            user.setPhoneNumber(command.phoneNumber());
+        }
+        userRepository.save(user);
+        return Optional.of(user);
+    }
 }
