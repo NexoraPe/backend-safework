@@ -28,8 +28,9 @@ public class NotificationController {
         this.notificationAssembler = notificationAssembler;
     }
 
-     /**
-     * Returns all notifications belonging to a specific user, sorted by creation time.
+    /**
+     * Returns all notifications belonging to a specific user, sorted by creation
+     * time.
      *
      * @param userId ID of the authenticated user requesting their notifications.
      * @return List of NotificationResponse objects.
@@ -37,8 +38,14 @@ public class NotificationController {
 
     @GetMapping("/my-notifications")
     @Operation(summary = "Get My Notifications")
-    public ResponseEntity<List<NotificationResponse>> getMyNotifications(@RequestParam String userId) {
-        var notifications = notificationRepository.findByRecipientIdOrderByCreatedAtDesc(userId);
+    public ResponseEntity<List<NotificationResponse>> getMyNotifications() {
+        var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                .getAuthentication();
+        var userDetails = (com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl) authentication
+                .getPrincipal();
+
+        var notifications = notificationRepository
+                .findByRecipientIdOrderByCreatedAtDesc(String.valueOf(userDetails.getId()));
         var resources = notifications.stream()
                 .map(notificationAssembler::toResponseFrom)
                 .collect(Collectors.toList());
