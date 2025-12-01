@@ -48,4 +48,37 @@ public class IncidentQueryServiceImpl implements IncidentQueryService {
         return incidentRepository.findByCompanyId(query.company().getId());
     }
 
+    @Override
+    public com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.incident.IncidentAnalyticsResponse getAnalytics(
+            Long companyId) {
+        var rawCounts = incidentRepository.countTotalIncidentsByStatusAndCompanyId(companyId);
+
+        long total = 0;
+        for (Object[] row : rawCounts) {
+            total += (Long) row[1];
+        }
+
+        java.util.Map<String, com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.incident.IncidentAnalyticsResponse.IncidentStatusAnalytics> analyticsMap = new java.util.HashMap<>();
+
+        // Initialize with 0 for all statuses to ensure complete response
+        for (com.nexorape.safework.service.incidentmanagement.domain.model.valueobjects.incident.IncidentStatus status : com.nexorape.safework.service.incidentmanagement.domain.model.valueobjects.incident.IncidentStatus
+                .values()) {
+            analyticsMap.put(status.name().toLowerCase(),
+                    new com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.incident.IncidentAnalyticsResponse.IncidentStatusAnalytics(
+                            0L, 0.0));
+        }
+
+        for (Object[] row : rawCounts) {
+            var status = (com.nexorape.safework.service.incidentmanagement.domain.model.valueobjects.incident.IncidentStatus) row[0];
+            var count = (Long) row[1];
+            double percentage = total > 0 ? (double) count / total * 100 : 0.0;
+            analyticsMap.put(status.name().toLowerCase(),
+                    new com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.incident.IncidentAnalyticsResponse.IncidentStatusAnalytics(
+                            count, percentage));
+        }
+
+        return new com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.incident.IncidentAnalyticsResponse(
+                analyticsMap);
+    }
+
 }

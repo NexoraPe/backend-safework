@@ -14,4 +14,7 @@ public interface IncidentRepository extends JpaRepository<Incident, Long> {
 
     @org.springframework.data.jpa.repository.Query("SELECT i FROM Incident i JOIN FETCH i.user LEFT JOIN FETCH i.assignment a LEFT JOIN FETCH a.user WHERE i.company.id = :companyId")
     List<Incident> findByCompanyId(Long companyId);
+
+    @org.springframework.data.jpa.repository.Query("SELECT i.status, COUNT(i) FROM Incident i WHERE i.company.id = :companyId GROUP BY i.status")
+    List<Object[]> countTotalIncidentsByStatusAndCompanyId(Long companyId);
 }

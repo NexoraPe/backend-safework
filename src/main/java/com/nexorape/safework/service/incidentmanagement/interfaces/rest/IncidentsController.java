@@ -164,4 +164,19 @@ public class IncidentsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @GetMapping("/analytics")
+    @Operation(summary = "Get Incident Analytics")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Analytics fetched"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized") })
+    public ResponseEntity<com.nexorape.safework.service.incidentmanagement.interfaces.rest.resources.incident.IncidentAnalyticsResponse> getAnalytics() {
+        var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                .getAuthentication();
+        var userDetails = (com.nexorape.safework.service.iam.infrastructure.authorization.sfs.model.UserDetailsImpl) authentication
+                .getPrincipal();
+
+        var analytics = incidentQueryService.getAnalytics(userDetails.getCompanyId());
+        return ResponseEntity.ok(analytics);
+    }
 }
